@@ -1,0 +1,54 @@
+   .btn{
+            width: 240px;
+            line-height: 20px;
+            cursor:pointer;
+            padding: 12px;
+            text-align: center;
+            font-size: 20px;
+            color: #fff;
+        }
+        .f-color-control{
+            transform: scale(1);
+            border-radius:6px;
+            background-color: #ff6700;
+        }
+        .f-color-control:before{
+            position: absolute;
+            top: 0;  right: 0;  bottom: 0;  left: 0;
+            z-index:-1;
+            border-radius:6px;
+            background:rgba(0,0,0,.1);
+        }
+        .f-color-control:after{
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index:-1;
+            border-radius:6px;
+            background:rgba(255,255,255,.3);
+        }
+        .f-color-control:hover:before{
+            content:" ";
+        }
+        .f-color-control:active:after{
+            content:" ";
+        }
+		a{font-size:14px;  font-weight:bold;  text-decoration:none }
+		
+		a:link{color:#000000;}
+		 
+		a:active{color:#0066FF;}
+		input::-webkit-input-placeholder {  color: #999;  -webkit-transition: color.5s;  }  
+		input:focus::-webkit-input-placeholder, input:hover::-webkit-input-placeholder {  color: #c2c2c2;  -webkit-transition: color.5s;  } 
+		input[type=button] { width: 150px;  height: 30px;  background-color: #ff3000;  border: 0;  color: #fff; } 
+		input[type=button].on {  background-color: #eee;  color: #ccc;  cursor: not-allowed; }
+
+		.inputText { width: 240px;    height:24px;   font-size:16px;    padding-left:0px;   margin-left:10px; }
+  		.error { color:red;    font-size:11px;   position:absolute;    margin-left:10px;  margin-top:5px; }
+  		.success { color:green; font-size:11px;  position:absolute;    margin-left:10px; margin-top:5px;  }
+  		.tipMsg {  color:#000000;   font-size:11px; position:absolute;    margin-left:10px; margin-top:5px; }
+
+		.inputTextspan { font-size:11px;   position:absolute;   margin-left:10px; margin-top:5px; }
+  		.strengthLv1{ color:red;  font-size:11px;   position:absolute;   margin-left:10px; margin-top:5px; }
+  		.strengthLv2{ color:orange;  font-size:11px;   position:absolute;   margin-left:10px; margin-top:5px; }
+  		.strengthLv3{ color:green; font-size:11px;   position:absolute;   margin-left:10px; margin-top:5px;   }
+  		#dtm{ width: 120px; height:24px; font-size:16px; padding-left:0px; margin-left:10px ;}

@@ -1,0 +1,77 @@
+{% load staticfiles %}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/htm; charset=utf-8" />
+<!--<script src="http://code.jquery.com/jquery-latest.js"></script> -->
+<script src="http://libs.baidu.com/jquery/1.3.2/jquery.min.js"></script>
+<script src="{% static "js/yzm.js"%}" ></script>
+<link rel="stylesheet" type="text/css"  href="{% static 'css/reg.css'%}"  />
+<title>用户注册</title>
+</head>
+<body style="overflow:scroll;overflow-x:hidden; font-family:Times New Roman">
+	<div id="m_bg" style=" position: absolute;top: 2%; left:2%; " >
+			<img src="{% static "image/logo.png"%}" height="91px" width="262px" />
+			<div style="font-size:24px; font-weight:bold; margin-top:-60px; margin-left:270px;">
+				<span  >用户注册</span>
+			</div>
+	</div> 
+	<form id="reg" method="post">
+        {% csrf_token %}
+			<div id="login_form"  style="position: absolute;top: 15%; left:50%;
+				 margin-left:-400px; margin-right:-400px; 
+				 width:800px; height:390px; background-color:#FFFFFF"; >
+			
+			<div id="register_form_username" style="position:relative; margin-top:40px; margin-left:70px"> 
+			  <label style="font-size:16px; " >用&ensp;户&ensp;名</label>	
+			  <input type="text" name="username" id="username"  placeholder="用户名由字母、数字组成"   class="inputText"/> 
+			  <span  id="username_span"   class="inputTextspan"  ></span> 
+			</div>
+			<div id="register_form_pwd" style="position:relative; margin-top:20px; margin-left:70px">
+				<label style="font-size:16px; " >密&ensp;&ensp;&ensp;&ensp;码</label>	
+				<input type="password" name="pwd" id="pwd"   placeholder="密码长度不能低于8位"   class="inputText" maxlength=16 />
+				<span  id="pwd_span"   class="inputTextspan"  ></span> 			  
+			</div> 
+						
+			<div id="register_form_pwd2" style="position:relative; margin-top:20px; margin-left:70px">
+				<label style="font-size:16px; " >确认密码 </label>	
+				<input type="password" name="pwd2" id="pwd2"   placeholder="再次输入密码"    class="inputText" />
+				  <span  id="pwd2_span"   class="inputTextspan"  ></span>
+			</div>
+			<div id="register_form_phone" style="position:relative; margin-top:20px; margin-left:70px">
+				<label style="font-size:16px; " >手机号码 </label>	
+				<input type="text" name="phone"   placeholder="手机号码11位"  id="phone"   class="inputText" />
+				 <span  id="phone_span"   class="inputTextspan"  >手机号用于找回密码，建议绑定</span>
+			</div>
+			<div id="register_form_nnn" style="position:relative; margin-top:20px; margin-left:70px"> 
+				<label style="font-size:16px; " >动&ensp;态&ensp;码</label>	
+				<input type="text" name="dtm" id = "dtm" placeholder="请输入短信验证码"   />
+				<input type="button" value="获取动态码" onclick="btnCheck" id="codebtn" style="width: 110px; height:24px; font-size:14px; margin-left: 5px " />
+			
+			</div>
+			<div id="register_form_agree" style="position:relative; margin-top:20px; margin-left:70px">
+			 	<input  type="checkbox" id="cbox" /> <label style="font-size:16px; " id="agree" >我已阅读并同意<a href="">《用户注册协议》</a></label>
+				<span  id="cbox_span"   class="error"  ></span> 					
+			</div>
+			<button type="submit" id="btn_login" class="btn f-color-control" style="margin-left:70px; margin-top:30px">同意并注册</button>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% url 'login' %}">登录</a></span>
+			 
+		</div>
+	</form>
+{#    {% if messages %}#}
+{#        <script>#}
+{#            {% for msg in messages %}#}
+{#               alert("{{ msg.message }}");#}
+{#            {% endfor %}#}
+{#        </script>#}
+{#    {% endif %}#}
+	 <div style="position: absolute; bottom:10%; left: 50%; margin-left:-250px;"
+		  class="gen-font">
+		  <span >@2019 copyright 京ICP证030173号  京公网安备11000002000001号&nbsp;&nbsp;</span>
+		  <a href="http://www.w3school.com.cn">联系我们</a>&nbsp;&nbsp;
+		  <a href="http://www.baidu.com" >意见反馈</a> 
+	 </div>  
+</body> 
+
+<script src="{% static "js/register.js"%}"></script>
+</html>

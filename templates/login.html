@@ -1,0 +1,60 @@
+{% load staticfiles %}
+ {% csrf_token %}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/htm; charset=utf-8" />
+<script src="{% static "js/login.js"%}" ></script>
+<link rel="stylesheet" type="text/css"  href="{% static 'css/login.css'%}"  />
+<title>用户登录</title>
+</head>
+
+<body style="overflow:scroll;overflow-x:hidden; font-family:Times New Roman">
+
+    <div id="m_bg" style=" position: absolute;top: 2%; left:2%; " >
+			<img src="{% static "image/logo.png"%}" height="91px" width="262px" />
+			<div style="font-size:24px; font-weight:bold; margin-top:-60px; margin-left:270px;">
+				<span  >用户登录</span>
+			</div>
+	</div>
+ 	 
+	<div id="m_bg" style=" position: absolute;top: 20%; width:100%" >
+		<img src="{% static "image/login_bg1.png"%}" height="490" width="100%" />
+	</div> 
+	<form id="user_login" method="post">
+        {% csrf_token %}
+		<div id="login_form" >
+			<div style="position:relative; margin-left:20px; margin-top:40px" >
+				<label style="font-size:20px; font-weight:bold" >用户名登陆</label>
+			</div>
+			<div id="login_form_username" style="position:relative; margin-top:40px; margin-left:70px">
+				<input type="text" name="user_name" id="username"  placeholder="请输入用户名"  />
+			</div>
+			<div id="login_form_pwd" >
+				<input type="password" name="pass_word"   id="pwd" placeholder="请输入密码"  />
+   			</div>
+{#			<div id="dragContainer" >#}
+{#				<div id="dragBg"></div>#}
+{#				<div id="dragText"></div>#}
+{#				<div id="dragHandler" class="dragHandlerBg"></div>#}
+{#			</div>#}
+			<div id="errorCont" >
+				<span> {{ errors }}</span>
+			</div>
+			<button type="submit" id="btn_login" class="btn f-color-control" style="margin-left:70px; margin-top:15px"  >登录</button>
+			<div style="position:relative; margin-left:70px; margin-top:20px" >
+				<a href="index.html" class="a-href" >忘记密码</a>
+				<a href="{% url 'register' %}" class="a-href" style="margin-left:130px" >用户注册</a>
+			</div>
+{#			<div style="position:relative; margin-left:20px; margin-top:30px" >#}
+{#				 <label style="font-size:11px; " >第三方用户登陆：即将上线</label>#}
+{#			</div>#}
+		</div>
+	</form>
+	 <div style="position: absolute; bottom:10%; left: 50%; margin-left:-250px;"
+		  class="gen-font"> 
+		  <span >@2019 copyright 京ICP证030173号  京公网安备11000002000001号&nbsp;&nbsp;</span>
+		  <a href="http://www.w3school.com.cn">联系我们</a>&nbsp;&nbsp;
+		  <a href="http://www.baidu.com" >意见反馈</a> 
+	 </div> 
+</body>
+</html>

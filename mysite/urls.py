@@ -21,5 +21,10 @@ from mysite import settings
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    url(r'index/',views.index),
+    url(r'reg/',views.register,name='register'),
+    url(r'index/',views.index,name='index'),
+    url(r'login/',views.login,name='login'),
+    url(r'logout/',views.logout,name='logout'),
+    url(r'search/', views.search, name='search'),
+    url(r'answer/', views.search, name='answer'),
 ]

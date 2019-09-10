@@ -1,0 +1,54 @@
+{% load staticfiles %}
+ {% csrf_token %}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/htm; charset=utf-8" />
+<script src="{% static "js/login.js"%}" ></script>
+<link rel="stylesheet" type="text/css"  href="{% static 'css/login.css'%}"  />
+<title>答题网</title>
+</head>
+
+<body style="overflow:scroll;overflow-x:hidden; font-family:Times New Roman">
+
+    <div id="m_bg" style=" position: absolute;top: 2%; left:2%; " >
+			<img src="{% static "image/logo.png"%}" height="91px" width="262px" />
+			<div style="font-size:24px; font-weight:bold; margin-top:-60px; margin-left:270px;">
+				<span  >知识就是力量</span>
+			</div>
+	</div>
+    <div id="search_div"  style=" position: absolute;
+          top: 30%;
+          left: 50%;
+          margin-left: -300px;
+          margin-top: -100px;">
+	 {%  if jumptype == '1'  %}
+        <p>注册成功！还有<span id="sp">3</span>秒跳转到登录界面...如果没有自动跳转，请<a href="{% url 'login' %}">点击这里</a></p>
+    {% endif %} 
+    </div>
+	<script>
+		onload=function () {
+			setInterval(go,1000)
+		};
+		var x=2;
+		function go() {
+
+			if (x>0){
+				document.getElementById("sp").innerText=x+1;
+			}else {
+			    var _data={{ jumptype }}
+			    if(_data='1')
+				location.href="{% url 'login' %}";
+			}
+			x--;
+		}
+	</script>
+ 	 
+	
+	 <div style="position: absolute; bottom:10%; left: 50%; margin-left:-250px;"
+		  class="gen-font"> 
+		  <span >@2019 copyright 京ICP证030173号  京公网安备11000002000001号&nbsp;&nbsp;</span>
+		  <a href="http://www.w3school.com.cn">联系我们</a>&nbsp;&nbsp;
+		  <a href="http://www.baidu.com" >意见反馈</a> 
+	 </div> 
+</body>
+</html>
