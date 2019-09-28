@@ -2,17 +2,28 @@ import re
 import urllib
 from urllib.parse import unquote
 
+import json
+from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect,reverse
 from django.shortcuts import HttpResponse
 from functools import wraps
 # Create your views here.
+from django_redis import cache
+
 from cmdb import models
 from cmdb.formcheck import FormCheck, FM
 from django.contrib import messages
 
+from cmdb.forms import UserForm
 from cmdb.models import user_info
-from cmdb.myTools import myTools
+from cmdb.myTools import myTools,myHttpReturnData
+
+import logging
+
+from cmdb.sendsmsutils import send_sms, send_sms_view, checkPhoneCode
+
+logger = logging.getLogger('suser')
 
 
 def register(request):
@@ -25,9 +36,21 @@ def register(request):
             _phone = request.POST.get("phone", None)
             models.user_info.objects.create(user_name=username, pass_word=pwd, phone=_phone)
             # messages.success(request, "注册成功")
+            logger.info('url:%s method:%s 注册成功' % (request.path, request.method))
             return render(request, "pagejump.html", {'jumptype':"1"})
-    return render(request, "register.html",)
+        else:
+            return render(request,"register.html",request)
+    else:
 
+        return render(request, "register.html")
+def ajaxreg(request):
+        username = request.POST.get("username", None)
+        _list1= models.user_info.objects.filter(user_name=username);
+        _list2 =  models.user_info.objects.filter(phone=username);
+        if len(_list1)<=0 and len(_list2)<=0 :
+            return HttpResponse("0")
+        else :
+            return HttpResponse("1")
 def check_login(f):
     @wraps(f)
     def inner(request,*arg,**kwargs):
@@ -40,28 +63,32 @@ def check_login(f):
 def login(request):
     # 如果是POST请求，则说明是点击登录按扭 FORM表单跳转到此的，那么就要验证密码，并进行保存session
     if request.method=="POST":
-        obj = FM(request.POST)
-        if obj.is_valid():
-
-            obj.cleaned_data['pass_word'] = myTools.encryption(obj.cleaned_data['pass_word'])
-            print(obj.cleaned_data)
-            check_dic = models.user_info.objects.filter(**obj.cleaned_data).first()
+        login_form = UserForm(request.POST)
+        if login_form.is_valid():
+            user_name = login_form.cleaned_data['user_name']
+            pwd = myTools.encryption(login_form.cleaned_data['pass_word'])
+            check_dic = models.user_info.objects.filter(user_name=user_name, pass_word=pwd).first()
             if check_dic is None:
-                return render(request, 'login.html',{'errors': "用户名或密码错误"})
+                logger.info('url:%s method:%s 登陆失败' % (request.path, request.method))
+                return render(request, 'login.html',{'errors': "用户名或密码错误",'login_form':login_form})
             else:
                 request.session['user_id'] = check_dic.id
                 request.session['user_name'] = check_dic.user_name
                 request.session['is_login'] = True
+                logger.info('url:%s method:%s 登陆成功' % (request.path, request.method))
                 return redirect(reverse('index'))
         else:
-            return render(request, 'login.html', {'errors': "用户名或密码错误"})
+            return render(request, 'login.html', {'errors': "验证码错误",'login_form':login_form})
+    else:
+        login_form = UserForm();
     # 如果是GET请求，就说明是用户刚开始登录，使用URL直接进入登录页面的
-    return render(request,'login.html', {'errors': ""})
+    return render(request,'login.html', {'errors': "",'login_form':login_form})
 #注销当前用户
 def logout(request):
     del request.session["user_name"]  # 删除session
     del request.session["user_id"]
     request.session['is_login'] = False
+    logger.info('url:%s method:%s 注销用户' % (request.path, request.method))
     return redirect(reverse('index'))
 
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
@@ -70,7 +97,9 @@ def search(request):
     global searchdic
     if  request.GET.get("key", None) is None:
         searchkey = None
+        return render(request, 'search.html')
     else:
+        logger.info('url:%s method:%s key:%s' % (request.path, request.method,request.GET.get("key")))
         searchkey =  unquote(request.GET.get("key", None))
         searchdic = models.knowlageinfo.objects.filter(kname__contains=searchkey).values('kid', 'kname').order_by('kid');
     page = request.GET.get('page')
@@ -87,33 +116,80 @@ def search(request):
     return render(request, 'search.html',{'results':curpagelist})
 #@check_login
 def answer(request):
-    kid = request.GET.get('kid')
-    _type= request.Get.get('type')
-    if _type is not None:#获取答案
-        aswer_detail = models.knowlageinfo.objects.filter(kid=kid).values('kanwers').first()
+    if request.method=="GET":
+        kid = request.GET.get('id')
+        answer_info = models.knowlageinfo.objects.filter(kid=kid).values('kid', 'kname').first()
+        return render(request, 'aswer.html', {'answerinfo': answer_info})
+    else:
+        #获取答案
+        kid = request.POST.get('kid')
+        aswer_detail = models.knowlageinfo.objects.filter(kid=kid).values('kanwers')
+        jsondata = json.dumps(list(aswer_detail), cls=DjangoJSONEncoder)
         aswer_money = 10
-        if request.session['is_login']:#判断用户是否登录
+        user_id = request.session.get("user_id")
+        if user_id is not None:#判断用户是否登录
             _user_info = models.user_info.objects.filter(id = request.session["user_id"] ).first()#获取用户点券数量
             if _user_info.userright>20: # 20为普通用户，以上全部包含查题vip权限
-                return render(request, 'anwer.htnl', locals())
+                return HttpResponse(jsondata, content_type="application/json")
             else :#普通用户扣点券
                 sypoint = _user_info.userpoint - aswer_money
                 if sypoint>=0 :#判断用户是否有足够的点券
                     models.user_info.objects.filter(id=request.session["user_id"]).update(userpoint = sypoint)
-                    return render(request, 'anwer.htnl', locals())
+                    return HttpResponse(jsondata, content_type="application/json")
                 else :
                     #点券不足，提醒用户充值
-                    return render(request, 'anwer.htnl', locals())
-
-                return render(request, 'anwer.htnl', locals())
+                    jsondata = json.dumps([{'errors':1}])
+                    return HttpResponse(jsondata, content_type="application/json")
         else : #返回界面，请用户登录
-            return render(request, 'anwer.htnl', locals())
-        return render(request,'anwer.htnl',locals())
+            jsondata = json.dumps([{'errors': 2}])
+            return HttpResponse(jsondata, content_type="application/json")
 def index(request):
        # username1=request.session.get('username')
     # user_id1=request.session.get('user_id')
 
     return render(request,'index.html')
+#提交答案
+def myanswers(request):
+    if request.method=="GET":
+        kid = request.GET.get('id')
+        answer_info = models.knowlageinfo.objects.filter(kid=kid).first()
+        return render(request,'myanswer.html',locals())
+    else:
+        kid = request.POST.get('id')
+        kanwers = request.POST.get('kanwers')
+        kanwersid = request.session.get("user_id")
+        if kid and kanwers and kanwersid:
+            models.answerques.objects.create(kid=kid, kanwers=kanwers, kanwersid=kanwersid);
+            return render(request, "pagejump.html", {'jumptype': "2"})
+        else :
+            return HttpResponse("数据错误，请检查或联系客服人员")
+
+#个人中心
+def myinformation(request):
+    if request.method=="GET":
+        _id = request.session['user_id']
+        if _id:
+            userinfo = models.user_info.objects.filter(id=_id).first()
+            phone = request.GET.get('phone')
+            if request.GET.get('phone'):
+                send_sms_view(request)
+            return render(request,'myinformation.html',locals())
+        else:
+            return redirect(reverse('login'))
+    else:
+        pho = request.POST.get('phone')
+        _codp =  request.POST.get('dtm')
+        if len(pho)<11:
+            return render(request, 'myinformation.html',{'errors':"手机号码输入错误"})
+        else:
+            if checkPhoneCode(pho,_codp):
+                models.user_info.objects.filter(id=request.session["user_id"]).update(phone=pho)
+        return render(request, 'myinformation.html')
+# 联系我们
+def contactus(request):
+    return render(request,'contactus.html')
+
+
 
 
 

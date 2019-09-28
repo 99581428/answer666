@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/htm; charset=utf-8" />
-<script src="{% static "js/login.js"%}" ></script>
 <link rel="stylesheet" type="text/css"  href="{% static 'css/login.css'%}"  />
 <title>用户登录</title>
 </head>
@@ -32,16 +31,34 @@
 			<div id="login_form_pwd" >
 				<input type="password" name="pass_word"   id="pwd" placeholder="请输入密码"  />
    			</div>
-{#			<div id="dragContainer" >#}
-{#				<div id="dragBg"></div>#}
-{#				<div id="dragText"></div>#}
-{#				<div id="dragHandler" class="dragHandlerBg"></div>#}
-{#			</div>#}
+            <div id="login_form_ca" >
+                   {{ login_form.captcha }}
+            </div>
+            <script>
+                    $('#js-captcha-refresh').click(function () {
+                        $.getJSON("/captcha/refresh/", function (result) {
+                        $('#js-captcha-refresh').attr('src', result['image_url']);
+                        $('#id_captcha_0').val(result['key'])
+                        });
+                     });
+                  </script>
 			<div id="errorCont" >
 				<span> {{ errors }}</span>
 			</div>
 			<button type="submit" id="btn_login" class="btn f-color-control" style="margin-left:70px; margin-top:15px"  >登录</button>
-			<div style="position:relative; margin-left:70px; margin-top:20px" >
+			<script>
+                document.querySelector('#user_login').onsubmit = function () {
+                    if(document.querySelector('#user_name').value.length<8)
+                    {
+                        return false
+                    }
+                    if(document.querySelector('#pwd').value.length<8)
+                    {
+                        return false
+                    }
+                }
+            </script>
+            <div style="position:relative; margin-left:70px; margin-top:20px" >
 				<a href="index.html" class="a-href" >忘记密码</a>
 				<a href="{% url 'register' %}" class="a-href" style="margin-left:130px" >用户注册</a>
 			</div>
@@ -57,4 +74,6 @@
 		  <a href="http://www.baidu.com" >意见反馈</a> 
 	 </div> 
 </body>
+
+<script src="{% static "js/login.js"%}" ></script>
 </html>

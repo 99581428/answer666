@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cmdb',
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -121,7 +122,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -131,7 +133,20 @@ STATIC_URL = '/static/'
 
 USE_TZ = True
 
-
+# django_simple_captcha 验证码配置其他配置项查看文档
+# 默认格式
+CAPTCHA_FIELD_TEMPLATE = "captcha/field.html"
+CAPTCHA_TEXT_FIELD_TEMPLATE = "captcha/text_field.html"
+CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_dots', # 没有样式
+    # 'captcha.helpers.noise_arcs', # 线
+    # 'captcha.helpers.noise_dots', # 点
+)
+# 图片中的文字为随机英文字母，如 mdsh
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge'
+ # 图片中的文字为数字表达式，如2+2=
+# CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+# 超时(minutes)
+CAPTCHA_TIMEOUT = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_ROOT = os.path.join(BASE_DIR,'static')
@@ -140,3 +155,52 @@ STATICFILES_DIRS = (
     ("js",os.path.join(STATIC_ROOT,'js')),
     ("image", os.path.join(STATIC_ROOT, 'image')),
 )
+# 创建日志文件夹路径
+LOG_PATH = os.path.join(BASE_DIR, 'log')
+# 如过地址不存在，则自动创建log文件夹
+if not os.path.isdir(LOG_PATH):
+    os.mkdir(LOG_PATH)
+
+LOGGING = {
+    # 规定只能这样写
+    'version': 1,
+    # True表示禁用loggers
+    'disable_existing_loggers': False,
+    # 指定文件写入的格式——这里写了两个不同的格式，方便在后面不同情况需要的时候使用
+    'formatters': {
+        'default': {
+            'format': '%(levelno)s %(funcName)s %(asctime)s %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(module)s %(asctime)s %(message)s'
+        }
+    },
+    'handlers': {
+        'suser_handlers': {
+            'level': 'DEBUG',
+            # 日志文件指定为多大(5M)， 超过大小(5M)重新命名，然后写新的日志文件
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 5 * 1024 * 1024,
+            # 储存到的文件地址
+            'filename': '%s/log.txt' % LOG_PATH,
+            'formatter': 'default'
+        },
+        'uauth_handlers': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 5 * 1024 * 1024,
+            'filename': '%s/uauth_log.txt' % LOG_PATH,
+            'formatter': 'simple'
+        }
+    },
+    'loggers': {
+        'suser': {
+            'handlers': ['suser_handlers'],
+            'level': 'INFO'
+        },
+        'auth': {
+            'handlers': ['uauth_handlers'],
+            'level': 'INFO'
+        }
+    }
+}

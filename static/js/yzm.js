@@ -2,8 +2,15 @@ window.onload = function()
 {
 	$("input[type='button']").click(btnCheck);  			 
 	 function btnCheck() {   
-		if(!checkphone()){ 
-			
+		if(checkphone()){
+			if($('#yzmposition').val()==1)
+			{
+				window.location.href='/myinformation/' + "?phone=" + ($('#phone').val());
+			}else
+			{
+				window.location.href='/reg/' + "?phone=" + ($('#phone').val());
+			}
+
 			return;
 		} 
 			$(this).addClass("on");   
@@ -24,8 +31,9 @@ window.onload = function()
 		 } 
 		 var checkphone = function()
 		{
-			var phones = $('#phone').val(); 
-			if(!(/^1[3,4,5,7,8]\d{9}$/.test(phones))){ 	
+			var phones = $('#phone').val();
+			alert(phones)
+			if(!(/^1[3,4,5,7,8]\d{9}$/.test(phones))){
 				$('#phone_span').attr("class","error")			
 				$('#phone_span').html("手机号码有误，请确认");    
 					return false;

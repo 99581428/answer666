@@ -1,77 +1,21 @@
 window.onload = function() {
-            var dragContainer = document.getElementById("dragContainer");
-            var dragBg = document.getElementById("dragBg");
-            var dragText = document.getElementById("dragText");
-            var dragHandler = document.getElementById("dragHandler");
+             var username = document.getElementById('username');
+             var pwd = document.getElementById('pwd')
+	        var logi = document.getElementById('user_login');
+		// 设置用户名是否满足条件的标志 false 表示没有通过，true表示通过
+ 	     var isUsernameOk = false;
 
-            //滑块最大偏移量
-            var maxHandlerOffset = dragContainer.clientWidth - dragHandler.clientWidth; 
-            //是否验证成功的标记
-            var isVertifySucc = false;
-            initDrag();
-
-            function initDrag() {
-                dragText.textContent = "拖动滑块验证";
-                dragHandler.addEventListener("mousedown", onDragHandlerMouseDown);
-
-                dragHandler.addEventListener("touchstart", onDragHandlerMouseDown);
+    // 设置表单的提交事件，根据条件是否允许提交
+		logi.onsubmit = function () {
+		    var str1 = username.value.trim();
+		    var str2 = pwd.value
+		    if(str1.length<6)
+            {
+                return false;
             }
-
-            function onDragHandlerMouseDown(event) {
-                document.addEventListener("mousemove", onDragHandlerMouseMove);
-                document.addEventListener("mouseup", onDragHandlerMouseUp);
-
-                document.addEventListener("touchmove", onDragHandlerMouseMove);
-                document.addEventListener("touchend", onDragHandlerMouseUp);
+            if(str2.length<8)
+            {
+                return false;
             }
-
-            function onDragHandlerMouseMove(event) {
-                /*
-                html元素不存在width属性,只有clientWidth
-                offsetX是相对当前元素的,clientX和pageX是相对其父元素的
-
-                touches：表示当前跟踪的触摸操作的touch对象的数组。
-                targetTouches：特定于事件目标的Touch对象的数组。
-            　　changedTouches：表示自上次触摸以来发生了什么改变的Touch对象的数组。
-                */
-				
-				//特别注意：由于translate(-50%)，所以实际的left比属性中的offsetLeft要左50%
-                var left = (event.clientX || event.changedTouches[0].clientX) - dragHandler.clientWidth / 2 - dragContainer.offsetLeft + dragContainer.clientWidth / 2;
-				console.log(event.clientX, dragContainer.offsetLeft);
-				console.log(event)  
-                if(left < 0) {
-                    left = 0;
-                } else if(left > maxHandlerOffset) {
-                    left = maxHandlerOffset;
-                    verifySucc();
-                }
-                dragHandler.style.left = left + "px";
-                dragBg.style.width = dragHandler.style.left;
-            }
-            function onDragHandlerMouseUp(event) {
-                document.removeEventListener("mousemove", onDragHandlerMouseMove);
-                document.removeEventListener("mouseup", onDragHandlerMouseUp);
-
-                document.removeEventListener("touchmove", onDragHandlerMouseMove);
-                document.removeEventListener("touchend", onDragHandlerMouseUp);
-
-                dragHandler.style.left = 0;
-                dragBg.style.width = 0;
-            }
-
-            //验证成功
-            function verifySucc() {
-                isVertifySucc = true;
-                dragText.textContent = "验证通过";
-                dragText.style.color = "white";
-                dragHandler.setAttribute("class", "dragHandlerOkBg");
-
-                dragHandler.removeEventListener("mousedown", onDragHandlerMouseDown);
-                document.removeEventListener("mousemove", onDragHandlerMouseMove);
-                document.removeEventListener("mouseup", onDragHandlerMouseUp);
-
-                dragHandler.removeEventListener("touchstart", onDragHandlerMouseDown);
-                document.removeEventListener("touchmove", onDragHandlerMouseMove);
-                document.removeEventListener("touchend", onDragHandlerMouseUp);
-            };
         }
+}

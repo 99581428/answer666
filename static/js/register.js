@@ -71,15 +71,46 @@
 					// 终止程序
 					return;
 				}	
-				else {
-						// 设置成功信息
-						document.querySelector('#username_span').className= 'success';
-						document.querySelector('#username_span').innerHTML = '可以注册';
-						
-						// 设置成功的标志
-						isUsernameOk = true;
-					} 
-			} 
+				else
+				{
+					 var xhr;
+					if(window.XMLHttpRequest)
+					{
+						xhr = new XMLHttpRequest();
+					}else if(window.ActiveXObject)
+					{
+						xhr = new window.ActiveXObject('Microsoft.XMLHTTP');
+					}else
+					{
+						alert("浏览器版本太低，请升级浏览器")
+					}
+					var urlss= '/ajaxrg/';
+					var param = 'username='+uname;
+					console.log(param)
+					xhr.open("post",urlss);
+				　  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+					xhr.send(param);
+					xhr.onreadystatechange=function () {
+						if(xhr.readyState===4 && (xhr.status===200||xhr.status===304)){
+							var s=xhr.responseText
+							if (s=="1"){
+								document.querySelector('#username_span').className = 'error';
+								document.querySelector('#username_span').innerHTML = '用户名已经注册';
+								// 设置用户名标记为false
+								isUsernameOk = false;
+							}else
+							{
+								// 设置成功信息
+								document.querySelector('#username_span').className= 'success';
+								document.querySelector('#username_span').innerHTML = '可以注册';
+								// 设置成功的标志
+								isUsernameOk = true;
+
+							}
+						}
+					}
+				}
+			}
 			  
 
   //密码规则验证

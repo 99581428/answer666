@@ -3,6 +3,8 @@ import hashlib
 from django.db import models
 
 # Create your models here.
+from django.utils import timezone
+
 from cmdb.myTools import myTools
 
 
@@ -37,11 +39,12 @@ class kmtype (models.Model):
 class kjtype (models.Model):
     kid= models.AutoField(primary_key = True)
     kname = models.CharField(max_length=32,null=False)
-
+#我要答题
 class answerques (models.Model):
     id = models.AutoField(primary_key = True)
     kid = models.IntegerField()
     kanwers = models.CharField(max_length=2000)  # 答案
     kanwersid = models.IntegerField()
-    ksubdate = models.DateTimeField()
+    ksubdate = models.DateTimeField('保存日期',default = timezone.now)
+
 

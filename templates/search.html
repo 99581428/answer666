@@ -16,9 +16,10 @@
             <div class="col-md-3 col-lg-3">
                 <img src="{% static "image/logo.png"%}" width="300" height="80" />
             </div>
-            <div class="col-md-7  col-lg-7">
+            <div class="col-md-7  col-lg-7" style="padding-top: 20px">
                 <input type="text" name="serchKey" id="searchkey" style="width: 400px; height:37px; font-size:16px">
-                <button type="button" id="btn_search"  onclick="mychange"  class="button" >寻找答案</button>
+                <button type="button" id="btn_search"  class="buttons" >寻找答案</button>
+                <script src="{% static 'js/search.js'%}"></script>
             </div>
 
             {% if  request.session.is_login %}
@@ -36,10 +37,14 @@
         </div>
     </div>
         <div class="container">
-        <p>问题列表，点击查看详细信息</p>
+        <br />
+         <br />
+        <p style="font-size: 16px; color: #00AA00">点击查看详细信息：</p>
+         <br />
+         <br />
             {% for knowlageinfo in results %}
-                 <div style="height: 100px; width: 100%; background-color: #0066FF"
-                 onclick="window.location.href= {% url 'login' %}+'?id='+{{knowlageinfo.kid}};return false;">{{knowlageinfo.kname}}</div>
+                 <div style="height: 100px; width: 100%; border:1px solid  #0066FF; padding: 10px"
+                 onclick="window.location.href= {% url 'answer' %}+'?id='+{{knowlageinfo.kid}};return false;">{{knowlageinfo.kname}}</div>
             {% endfor %}
         <nav aria-label="Page navigation" >
               <ul class="pagination">
@@ -80,6 +85,5 @@
 		  <a href="http://www.baidu.com" >意见反馈</a> 
 	 </div> 
 </body>
-<script src="search.js"></script>
 </html>
 </em>
