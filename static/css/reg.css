@@ -39,8 +39,8 @@
 		a:active{color:#0066FF;}
 		input::-webkit-input-placeholder {  color: #999;  -webkit-transition: color.5s;  }  
 		input:focus::-webkit-input-placeholder, input:hover::-webkit-input-placeholder {  color: #c2c2c2;  -webkit-transition: color.5s;  } 
-		input[type=button] { width: 150px;  height: 30px;  background-color: #ff3000;  border: 0;  color: #fff; } 
-		input[type=button].on {  background-color: #eee;  color: #ccc;  cursor: not-allowed; }
+		#codebtn { width: 150px;  height: 30px;  background-color: #ff3000;  border: 0;  color: #fff; }
+		#codebtn.on {  background-color: #eee;  color: #ccc;  cursor: not-allowed; }
 
 		.inputText { width: 240px;    height:24px;   font-size:16px;    padding-left:0px;   margin-left:10px; }
   		.error { color:red;    font-size:11px;   position:absolute;    margin-left:10px;  margin-top:5px; }

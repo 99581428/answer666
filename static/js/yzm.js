@@ -1,6 +1,6 @@
 window.onload = function()
 {
-	$("input[type='button']").click(btnCheck);  			 
+	$('#codebtn').click(btnCheck);
 	 function btnCheck() {   
 		if(checkphone()){
 			if($('#yzmposition').val()==1)
@@ -19,12 +19,12 @@ window.onload = function()
 			var timer = setInterval(function() {    
 				if (time == 0) {     
 					clearInterval(timer);    
-					$("input[type='button']").attr("disabled", false);    		 
-					$("input[type='button']").val("获取验证码");     
-					$("input[type='button']").removeClass("on");    
+					$('#codebtn').attr("disabled", false);
+					$('#codebtn').val("获取验证码");
+					$('#codebtn').removeClass("on");
 				} 
 				else{    
-					$("input[type='button']").val(time + "秒后重新获取"); 
+					$('#codebtn').val(time + "秒后重新获取");
 					time--;   
 				}  
 			}, 1000); 

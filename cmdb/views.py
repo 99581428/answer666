@@ -24,17 +24,18 @@ import logging
 from cmdb.sendsmsutils import send_sms, send_sms_view, checkPhoneCode
 
 logger = logging.getLogger('suser')
-
+errors = logging.getLogger('django.request')
 
 def register(request):
     if request.method == "POST":
+        logger.info('url:%s method:%s 注册数据' % (request.path, request.method))
         # 实例化form对象的时候，把post提交过来的数据直接传进去
         # 调用form_obj校验数据的方法
         if FormCheck.regCheck(request):
             username = request.POST.get("username", None)
             pwd = request.POST.get("pwd", None)
             _phone = request.POST.get("phone", None)
-            models.user_info.objects.create(user_name=username, pass_word=pwd, phone=_phone)
+            models.user_info.objects.create(user_name=username, pass_word=pwd, phone=_phone,userright=20)
             # messages.success(request, "注册成功")
             logger.info('url:%s method:%s 注册成功' % (request.path, request.method))
             return render(request, "pagejump.html", {'jumptype':"1"})
@@ -45,11 +46,14 @@ def register(request):
         return render(request, "register.html")
 def ajaxreg(request):
         username = request.POST.get("username", None)
+        logger.info('url:%s method:%s 检测用户名' % (request.path, username))
         _list1= models.user_info.objects.filter(user_name=username);
         _list2 =  models.user_info.objects.filter(phone=username);
         if len(_list1)<=0 and len(_list2)<=0 :
+            logger.info('url:%s method:%s 检测用户名0' % (request.path, username))
             return HttpResponse("0")
         else :
+            logger.info('url:%s method:%s 检测用户名1' % (request.path, username))
             return HttpResponse("1")
 def check_login(f):
     @wraps(f)

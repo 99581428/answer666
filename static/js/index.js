@@ -1,6 +1,6 @@
 window.onload = function()
 {
-	var btnSearch = document.querySelector('#btn_search');
+	var btnSearch = document.getElementById('btn_search');
 	btnSearch.onmousedown	= function()
 	{
 		btnSearch.className = 'button1'

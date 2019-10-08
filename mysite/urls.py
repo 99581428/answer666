@@ -34,5 +34,6 @@ urlpatterns = [
     url(r'myanswers/',views.myanswers,name='myanswers'),
     url(r'myinformation/',views.myinformation,name='myinformation'),
     url(r'send_sms_view/', views.send_sms_view, name='send_sms_view'),
+    url(r'^$',views.index),
 
 ]

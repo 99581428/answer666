@@ -191,6 +191,13 @@ LOGGING = {
             'maxBytes': 5 * 1024 * 1024,
             'filename': '%s/uauth_log.txt' % LOG_PATH,
             'formatter': 'simple'
+        },
+        'error_handlers': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 5 * 1024 * 1024,
+            'filename': '%s/err_log.txt' % LOG_PATH,
+            'formatter': 'simple'
         }
     },
     'loggers': {
@@ -201,6 +208,11 @@ LOGGING = {
         'auth': {
             'handlers': ['uauth_handlers'],
             'level': 'INFO'
-        }
+        },
+        'django.request': {
+            'handlers': ['error_handlers'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
     }
 }
